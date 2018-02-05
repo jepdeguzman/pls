@@ -105,47 +105,31 @@ public class PLS_Dao extends PLS_Beans{
 			
 			return plsDbFullName;
 		}
-
-		public void verifyUsernameData(String username) {
-			//List<PLS_Beans> plsDbUsers = null;
+		
+		//VERIFYING CREDENTIALS
+		public String verifyCredentials(String username, String password) {
 			
+			
+			//String x = null;
 			try {
 				
 				Class.forName("com.mysql.jdbc.Driver");
 				String db = "jdbc:mysql://172.26.83.193:3306/plsdb";
-				String user1 = "newuser";
-				String password1 = "password123";
-				String query = "SELECT username,password FROM plsdb.employee WHERE username=?";
+				String dbUser = "newuser";
+				String dbPass = "password123";
+				String query = "SELECT username,password FROM plsdb.employee WHERE username="+"'"+username+"' AND '"+password+"'";
 				
-				try {
-					Connection conn = DriverManager.getConnection(db,user1,password1);
-					Statement statement = conn.createStatement();
-					ResultSet rs = statement.executeQuery(query);
-					Statement st = conn.createStatement();
-					PreparedStatement ps = conn.prepareStatement(query);
-					ResultSet rs1 = ps.executeQuery();
-					// "SELECT * FROM staff where SName=? and SPwd=?"
-				//	plsDbUsers = new ArrayList<PLS_Beans>();
-					
-				if(!rs.next()) {
-					JOptionPane.showMessageDialog(null, "WRONG USERNAME");
-				}
+				Connection verifyCredsConn = DriverManager.getConnection(db,dbUser,dbPass);
 				
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-	/*				logger.error("Connection Error Encountered.");
-					logger.error(e.getMessage());*/
-					System.out.println("SQL EXCEPTION");
-					
-				}
+				Statement verifyCredsSt = verifyCredsConn.createStatement();
+				ResultSet verifyCredsRs = verifyCredsSt.executeQuery(query);
 				
-			} catch (ClassNotFoundException e) {
-				System.out.println("CLASS NOT FOUND EXCEPTION");
-				e.printStackTrace();
-			/*	logger.error(e.getMessage());*/
+				
+			}
+			catch (Exception exc) {
+				System.out.println("INCORRECT USERNAME AND PASSWORD");
 			}
 			
-			//return plsDbUsers;
+			//return exc;
 		}
-	
 }

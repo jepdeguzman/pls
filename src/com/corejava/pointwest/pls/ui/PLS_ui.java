@@ -22,11 +22,6 @@ public class PLS_ui extends PLS_Beans {
 			
 	}
 	
-	public void pleaseTryAgain() {
-		System.out.println("PLEASE TRY AGAIN!");
-		loginPage();
-	}
-	
 	public void fullNameList() {
 		System.out.println("---------------");
 		System.out.println("FIRSTNAME/LASTNAME LIST");
@@ -42,6 +37,7 @@ public class PLS_ui extends PLS_Beans {
 
 	public void loginPage() {
 		PLS_Manager plsManLogin = new PLS_Manager();
+		PLS_Dao plsDaoLogin = new PLS_Dao();
 		System.out.println("---------------------------------");
 		System.out.println("LOGIN");
 		System.out.println("---------------------------------");
@@ -49,6 +45,7 @@ public class PLS_ui extends PLS_Beans {
 		plsManLogin.plsLoginUsername();
 		System.out.print("Password: ");
 		plsManLogin.plsLoginPassword();
+		plsDaoLogin.verifyCredentials(username, password);
 		homePage();
 	}
 	

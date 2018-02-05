@@ -2,8 +2,8 @@ package com.corejava.pointwest.pls.beans;
 
 public class PLS_Beans {
 
-	private String username;
-	private String password;
+	protected String username;
+	protected String password;
 	private String firstName;
 	private String lastName;
 	private int emp_id;

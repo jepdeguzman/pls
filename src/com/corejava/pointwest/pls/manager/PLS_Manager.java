@@ -32,32 +32,14 @@ public class PLS_Manager extends PLS_Beans {
 	public String plsLoginUsername() {
 		Scanner scanUsername = new Scanner(System.in);
 		username = scanUsername.next();
-		PLS_Dao plsDaoUsername = new PLS_Dao();
 		plsBeansToMan.setUsername(username);
-		plsLoginUsernameVerify(username);
-		//username = plsDao.usernameVerify;
 		return username;
-		
 	}
 	
-	public static void plsLoginUsernameVerify(String username) {
-		PLS_Dao plsDao = new PLS_Dao();
-		plsDao.verifyUsernameData(username);
-	}
-	
-	//PASSWORD MANAGEMENT METHODS
-	public static String plsLoginPassword() {
+	public String plsLoginPassword() {
 		Scanner scanPassword = new Scanner(System.in);
 		password = scanPassword.next();
+		plsBeansToMan.setPassword(password);
 		return password;
 	}
-	
-	public static void plsLoginPasswordVerify(String password) {
-		
-	}
-	
-	public void plsFullNames() {
-		
-	} 
-
 }

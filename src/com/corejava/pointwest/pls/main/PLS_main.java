@@ -8,7 +8,7 @@ public class PLS_main {
 		PLS_ui plsui = new PLS_ui();
 		//plsui.fullNameList();
 		//plsui.usernameList();
-		plsui.loginPage();
+		plsui.loginPageUI();
 	}
 
 }

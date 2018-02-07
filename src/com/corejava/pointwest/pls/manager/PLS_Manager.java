@@ -1,7 +1,10 @@
 package com.corejava.pointwest.pls.manager;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import com.corejava.pointwest.pls.beans.PLS_Beans;
 import com.corejava.pointwest.pls.dao.PLS_Dao;
@@ -9,37 +12,234 @@ import com.corejava.pointwest.pls.ui.PLS_ui;
 
 
 public class PLS_Manager extends PLS_Beans {
-	
-	public static String username;
-	public static String password;
 	public static PLS_Beans plsBeansToMan =  new PLS_Beans();
 	public PLS_Dao plsDao = new PLS_Dao();
 	public static PLS_ui plsUiToMan = new PLS_ui(); 
-	public List<PLS_Beans> usernameList = plsDao.getUsernamesData();
-	public List<PLS_Beans> fullNameList = plsDao.getFullNameData();
-	//public Map<>
-	
-	//TEST : USERNAME LIST
-	public List<PLS_Beans> getUsernames(){
-		return usernameList;
-	}
-	
-	public List<PLS_Beans> getFullNames(){
-		return fullNameList;
-	}
-	
-	//USERNAME MANAGEMENT METHODS
-	public String plsLoginUsername() {
+	public List<PLS_Beans> plsGetNameResults;
+	public List<PLS_Beans> plsSeatPlanResults;
+	public Map<String, List> seatPlanView = new LinkedHashMap<String, List>();
+
+	//LOGIN MANAGEMENT METHODS
+	public void plsLogin() {
+		PLS_Dao plsDaoLogin = new PLS_Dao();
+		System.out.print("USERNAME: ");
 		Scanner scanUsername = new Scanner(System.in);
-		username = scanUsername.next();
-		plsBeansToMan.setUsername(username);
-		return username;
+		setUsername(scanUsername.next());
+		
+		System.out.print("PASSWORD: ");
+		Scanner scanPassword = new Scanner(System.in);
+		setPassword(scanPassword.next());
+		
+		plsDaoLogin.verifyCredentials(getUsername(), getPassword());
 	}
 	
-	public String plsLoginPassword() {
-		Scanner scanPassword = new Scanner(System.in);
-		password = scanPassword.next();
-		plsBeansToMan.setPassword(password);
-		return password;
+	
+	// EVALUATING MENU CHOICES
+	public void plsHomePage_evalChoice() {
+		PLS_ui plsHomePageUiMan = new PLS_ui();
+		Scanner scanHomePageMenuChoice = new Scanner(System.in);
+		int homePageMenuChoice = scanHomePageMenuChoice.nextInt();
+		switch(homePageMenuChoice) {
+		case 1:
+			plsHomePageUiMan.searchPageUI();
+			break;
+		case 2:
+			plsHomePageUiMan.seatPlanPageUI();
+			break;
+		case 3:
+			System.out.println("PROGRAM HAS ENDED. HAVE A NICE DAY!");
+			break;
+			default:
+		}
 	}
+	
+	public void plsSearchPage_evalChoice() {
+		PLS_ui plsSearchPageUiMan = new PLS_ui();
+		Scanner scanSearchPageMenuChoice = new Scanner(System.in);
+		int searchPageMenuChoice = scanSearchPageMenuChoice.nextInt();
+		switch(searchPageMenuChoice) {
+		case 1:
+			plsSearchPageUiMan.searchPage_byEmployeeIDUIDisplay();
+			break;
+		case 2:
+			plsSearchPageUiMan.searchPage_byNameUIDisplay();
+			break;
+		case 3:
+			plsSearchPageUiMan.searchPage_byProjectAliasDisplay();
+			break;
+			default:
+				System.out.println("** UNREGISTERED SEARCH. GOING BACK TO SEARCH PAGE. **");
+				plsSearchPageUiMan.searchPageUI();
+				break;
+		}	
+	}
+	
+	public void plsSeatPlanPage_evalChoice() {
+		PLS_ui plsSeatPlanPageUiMan = new PLS_ui();
+		Scanner scanSeatPlanMenuChoice = new Scanner(System.in);
+		int seatPlanMenuChoice = scanSeatPlanMenuChoice.nextInt();
+		switch(seatPlanMenuChoice) {
+		case 1:
+			plsSeatPlanPageUiMan.seatPlanPage_byLocationFloorLevelDisplay();
+			break;
+		case 2:
+			plsSeatPlanPageUiMan.seatPlanPage_byQuadrantDisplay();
+			break;
+			default:
+				System.out.println("** UNREGISTERED SEARCH. GOING BACK TO SEARCH PAGE. **");
+				plsSeatPlanPageUiMan.searchPageUI();
+				break;
+		}
+		
+	}
+
+	// DISPLAY MANAGEMENT METHODS : SEARCH PAGE
+	public List<PLS_Beans> plsSearchPage_byName() {
+		PLS_Dao plsSearchByNameDao = new PLS_Dao();
+		
+		System.out.print("ENTER FIRST NAME: ");
+		Scanner scanFirstName = new Scanner(System.in);
+		setFirstName(scanFirstName.nextLine());
+		
+		System.out.print("ENTER LAST NAME: ");
+		Scanner scanLastName = new Scanner(System.in);
+		setLastName(scanLastName.nextLine());
+		
+		plsGetNameResults = plsSearchByNameDao.searchByNameDao(getFirstName(), getLastName());
+
+		return plsGetNameResults;
+	}
+	
+	public List<PLS_Beans> plsSearchPage_byEmpID() {
+		PLS_Dao plsSearchByNameDao = new PLS_Dao();
+		
+		System.out.print("ENTER EMPLOYEE ID#: ");
+		Scanner scanEmpID = new Scanner(System.in);
+		String scannedempID = scanEmpID.nextLine();
+		setEmpId(scannedempID);
+		
+		plsGetNameResults = plsSearchByNameDao.searchByEmpIDDao(getEmpId());
+
+		return plsGetNameResults;
+	}
+	
+	public List<PLS_Beans> plsSearchPage_byProjectAlias() {
+		PLS_Dao plsSearchByProjectAliasDao = new PLS_Dao();
+		
+		System.out.print("ENTER PROJECT ALIAS: ");
+		Scanner scanProjectAliasID = new Scanner(System.in);
+		String scannedProjectAlias = scanProjectAliasID.nextLine();
+		setProjectAlias(scannedProjectAlias);
+		
+		plsGetNameResults = plsSearchByProjectAliasDao.searchByProjectAliasDao(getProjectAlias());
+
+		return plsGetNameResults;
+	}
+	
+	// DISPLAY MANAGEMENT METHODS : SEAT PLAN
+	public List<PLS_Beans> plsSeatPlan_byLocationFloor(){
+		PLS_Dao plsSearchByProjectAliasDao = new PLS_Dao();
+		
+		System.out.print("ENTER LOCATION CODE [PIC/PTC/PLC]: ");
+		Scanner scanLocation = new Scanner(System.in);
+		String scannedLocation = scanLocation.nextLine();
+		setBldg_id(scannedLocation);
+		
+		System.out.print("ENTER FLOOR [PIC: 2/3 | PTC 12 | PLC 2/9]: ");
+		Scanner scanFloor = new Scanner(System.in);
+		String scannedFloor = scanFloor.nextLine();
+		setFloor_number(scannedFloor);
+		
+		plsSeatPlanResults = plsSearchByProjectAliasDao.seatPlanLocationFloorDao(getBldg_id(), getFloor_number());
+
+		return plsSeatPlanResults;
+	}
+	
+	public Map<String, List> plsSeatPlan_byQuadrant(){
+		PLS_Dao plsSeatPlanByQuadrantDao = new PLS_Dao();
+		
+		System.out.print("ENTER LOCATION CODE [PIC/PTC/PLC]: ");
+		Scanner scanLocation = new Scanner(System.in);
+		String scannedLocation = scanLocation.nextLine();
+		setBldg_id(scannedLocation);
+		
+		System.out.print("ENTER FLOOR [PIC: 2/3 | PTC 12 | PLC 2/9]: ");
+		Scanner scanFloor = new Scanner(System.in);
+		String scannedFloor = scanFloor.nextLine();
+		setFloor_number(scannedFloor);
+		
+		System.out.print("ENTER QUADRANT [A/B/C/D]: ");
+		Scanner scanQuadrant = new Scanner(System.in);
+		String scannedQuadrant = scanQuadrant.nextLine();
+		setQuadrant(scannedQuadrant);
+	
+		seatPlanView = plsSeatPlanByQuadrantDao.seatPlanQuadrantDao(getQuadrant(), getBldg_id(), getFloor_number());
+
+		return seatPlanView;
+	}
+	
+	
+	//ACTION CHOICES
+	public void plsSearchPage_byName_action() {
+		Scanner scanActionChoice = new Scanner(System.in);
+		int actionChoice = scanActionChoice.nextInt();
+		PLS_ui plsUi = new PLS_ui();
+		switch(actionChoice) {
+		case 1: //SEARCH AGAIN
+			plsUi.searchPage_byNameUIDisplay();
+			break;
+		case 2: // RETURN TO HOME
+			plsUi.homePageUI();
+			break;
+			default:
+		}
+	}
+	
+	public void plsSearchPage_byEmpID_action() {
+		Scanner scanActionChoice = new Scanner(System.in);
+		int actionChoice = scanActionChoice.nextInt();
+		PLS_ui plsUi = new PLS_ui();
+		switch(actionChoice) {
+		case 1: //SEARCH AGAIN
+			plsUi.searchPage_byEmployeeIDUIDisplay();
+			break;
+		case 2: // RETURN TO HOME
+			plsUi.homePageUI();
+			break;
+			default:
+		}
+	}
+	
+	public void plsSearchPage_byProjectAlias_action() {
+		Scanner scanActionChoice = new Scanner(System.in);
+		int actionChoice = scanActionChoice.nextInt();
+		PLS_ui plsUi = new PLS_ui();
+		switch(actionChoice) {
+		case 1: //SEARCH AGAIN
+			plsUi.searchPage_byProjectAliasDisplay();
+			break;
+		case 2: // RETURN TO HOME
+			plsUi.homePageUI();
+			break;
+			default:
+		}
+	}
+	
+	public void plsSeatPlan_byLocationFloor_action() {
+		Scanner scanActionChoice = new Scanner(System.in);
+		int actionChoice = scanActionChoice.nextInt();
+		PLS_ui plsUi = new PLS_ui();
+		switch(actionChoice) {
+		case 1: //SEARCH AGAIN
+			plsUi.seatPlanPage_byLocationFloorLevelDisplay();
+			break;
+		case 2: // RETURN TO HOME
+			plsUi.homePageUI();
+			break;
+			default:
+				plsUi.homePageUI();
+				break;
+		}
+	}
+	
 }
